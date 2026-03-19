@@ -1,6 +1,7 @@
 """Tests for the shared in-memory data store."""
 import threading
 import time
+from datetime import datetime
 import pytest
 from services.fetchers._store import latest_data, source_timestamps, _mark_fresh, _data_lock
 
@@ -49,9 +50,10 @@ class TestMarkFresh:
     def test_timestamps_are_iso_format(self):
         _mark_fresh("iso_test")
         ts = source_timestamps["iso_test"]
-        # ISO format: YYYY-MM-DDTHH:MM:SS.ffffff
+        # ISO format: YYYY-MM-DDTHH:MM:SS.ffffff+00:00
         assert "T" in ts
-        assert len(ts) >= 19  # At least YYYY-MM-DDTHH:MM:SS
+        parsed = datetime.fromisoformat(ts)
+        assert parsed.tzinfo is not None
 
     def test_successive_calls_update_timestamp(self):
         _mark_fresh("update_test")
