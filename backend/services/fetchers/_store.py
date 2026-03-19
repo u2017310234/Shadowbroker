@@ -5,7 +5,7 @@ Every fetcher imports from here instead of maintaining its own copy.
 """
 import threading
 import logging
-from datetime import datetime
+from datetime import UTC, datetime
 
 logger = logging.getLogger("services.data_fetcher")
 
@@ -40,7 +40,7 @@ source_timestamps = {}
 
 def _mark_fresh(*keys):
     """Record the current UTC time for one or more data source keys."""
-    now = datetime.utcnow().isoformat()
+    now = datetime.now(UTC).isoformat()
     for k in keys:
         source_timestamps[k] = now
 
